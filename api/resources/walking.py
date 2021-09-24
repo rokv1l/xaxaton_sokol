@@ -12,7 +12,7 @@ class WalkingRoute(Resource):
         parser.add_argument('distance', type=int)
         parser.add_argument('time', type=int)
         parser.add_argument('vehicle', default='foot')
-        parser.add_argument('seed', type=int, default=1)
+        parser.add_argument('limit', type=int, default=3)
 
         args = parser.parse_args()
         print(args)
@@ -34,7 +34,10 @@ class WalkingRoute(Resource):
 
         # нужно добавить логику получения красных зон
         try:
-            routes = get_walking_route(args['from'], distance, args['vehicle'])
+            routes = []
+            for seed in range(args['limit']):
+                route = get_walking_route(args['from'], distance, args['vehicle'], seed=seed)
+                routes.append(route)
             return routes, 200
         except PointInRedZone:
             return {'error': 'point in red zone'}, 404
