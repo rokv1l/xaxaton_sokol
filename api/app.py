@@ -5,6 +5,7 @@ from flask_restful import Api
 from utils.init_sensors import init_sensors
 from resources.hello import Hello
 from resources.route import Route
+from resources.zones import Zones
 from resources.walking import WalkingRoute
 
 
@@ -15,6 +16,7 @@ api = Api(app)
 api.add_resource(Hello, '/hello')
 api.add_resource(Route, '/route')
 api.add_resource(WalkingRoute, '/walking')
+api.add_resource(Zones, "/zones")
 
 
 if __name__ == '__main__':
