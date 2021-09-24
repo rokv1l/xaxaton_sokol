@@ -16,11 +16,13 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: api
+      dockerfile: Dockerfile
     image: api
     container_name: api
     env_file:
       - .env
+    ports:
+      - "0.0.0.0:5000:5000"
     restart: always
     tty: True
