@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /opt/data:${SENSORS_DATA_PATH}
+      - /root/data:${SENSORS_DATA_PATH}
     ports:
       - "0.0.0.0:5000:5000"
     restart: always
