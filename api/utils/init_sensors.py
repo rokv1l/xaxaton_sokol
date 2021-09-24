@@ -20,6 +20,7 @@ def init_sensors():
         rows = [sheet.cell_value(0, col) for col in range(sheet.ncols)]
         if rows != example:
             print(f'Rows is not ok! Rows is {rows}, need to be like {example}')
+            continue
 
         for row in range(1, sheet.nrows):
             elem = {}
