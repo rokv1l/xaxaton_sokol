@@ -30,7 +30,13 @@ def init_sensors():
         for row in range(1, sheet.nrows):
             elem = {}
             for col in range(sheet.ncols):
-                elem[col] = sheet.cell_value(row, col)
+                value = sheet.cell_value(row, col)
+                if not value:
+                    elem = None
+                    break
+                elem[col] = value
+            if not elem:
+                continue
 
             street = file.replace('.xls', '').split('_')[0]
             sensor_num = file.replace('.xls', '').split('_')[-1]
@@ -45,16 +51,16 @@ def init_sensors():
                 sensor_num=int(sensor_num),
                 coords={},
                 measurement_datetime=elem[0],
-                temperature=elem[1],
-                humidity=elem[2],
-                co2=elem[3],
-                los=elem[4],
-                pm1=elem[5],
-                pm2_5=elem[6],
-                pm10=elem[7],
-                pressure=elem[8],
-                aqi=elem[9],
-                formaldehyde=elem[10],
+                temperature=round(elem[1], 3),
+                humidity=round(elem[2], 3),
+                co2=round(elem[3], 3),
+                los=round(elem[4], 3),
+                pm1=round(elem[5], 3),
+                pm2_5=round(elem[6], 3),
+                pm10=round(elem[7], 3),
+                pressure=round(elem[8], 3),
+                aqi=round(elem[9], 3),
+                formaldehyde=round(elem[10], 3),
             )
             with session_maker() as session:
                 session.add(sensor)
