@@ -1,8 +1,8 @@
 import requests
 
 import config
-from exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
-from common import block_areas_to_string, mark_waypoints
+from .exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
+from .common import block_areas_to_string, mark_waypoints
 
 
 def get_routes(departure, destination, vehicle='foot', block_areas=None, alternative_routes=None):
@@ -26,7 +26,7 @@ def get_routes(departure, destination, vehicle='foot', block_areas=None, alterna
         payload['alternative_route.max_share_factor'] = 1000
         payload['alternative_route.max_weight_factor'] = 1000
         
-    response = requests.post(config.URL, json=payload)
+    response = requests.post(config.gh_url, json=payload)
     if response.status_code != 200:
         error = response.json()
         if error['message'] == 'Connection between locations not found':

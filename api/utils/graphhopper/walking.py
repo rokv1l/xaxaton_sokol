@@ -1,8 +1,8 @@
 import requests
 
 import config
-from exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
-from common import block_areas_to_string, mark_waypoints
+from .exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
+from .common import block_areas_to_string, mark_waypoints
 
 
 def get_walking_route(departure, distance, vehicle='foot', block_areas=None, seed=None):
@@ -21,7 +21,7 @@ def get_walking_route(departure, distance, vehicle='foot', block_areas=None, see
     if seed:
         payload['round_trip.seed'] = seed
                 
-    response = requests.post(config.URL, json=payload)
+    response = requests.post(config.gh_url, json=payload)
     if response.status_code != 200:
         error = response.json()
         if error['message'] == 'Connection between locations not found':
