@@ -35,8 +35,8 @@ class Zones(Resource):
         }
         for coord in coords:
             result["sensors"].append({
-                center: coord,
-                radius: 1000,
-                pollution: random.randint(1, 230)
+                "center": coord,
+                "radius": 1000,
+                'pollution": random.randint(1, 230)
             })
         return result, 200
