@@ -3,3 +3,5 @@ flask_restful
 sqlalchemy
 requests
 xlrd
+flask-cors
+psycopg2
