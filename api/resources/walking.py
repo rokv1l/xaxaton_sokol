@@ -1,0 +1,42 @@
+from flask_restful import Resource, reqparse
+from utils.graphhopper import get_walking_route, PointInRedZone, SurroundedByRedZones
+
+AVG_BIKE_SPEED = 250  # м/мин
+AVG_FOOT_SPEED = 100  # м/мин
+
+
+class WalkingRoute(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('from', required=True)
+        parser.add_argument('distance', type=int)
+        parser.add_argument('time', type=int)
+        parser.add_argument('vehicle', default='foot')
+        parser.add_argument('seed', type=int, default=1)
+
+        args = parser.parse_args()
+        print(args)
+        try:
+            args['from'] = list(map(float, args['from'].split(',')))
+        except:
+            return {'error': 'invalid coordinates'}, 404
+
+        distance = args.get('distance')
+        if not distance:
+            time = args.get('time')
+            if not time:
+                return {'error': 'either distance or time must be specified'}, 404
+            
+            if args['vehicle'] == 'bike':
+                distance = int(time * AVG_BIKE_SPEED)
+            else:
+                distance = int(time * AVG_FOOT_SPEED)
+
+        # нужно добавить логику получения красных зон
+        try:
+            routes = get_walking_route(args['from'], distance, args['vehicle'])
+            return routes, 200
+        except PointInRedZone:
+            return {'error': 'point in red zone'}, 404
+        except SurroundedByRedZones:
+            return {'error': 'surrounded'}, 404
