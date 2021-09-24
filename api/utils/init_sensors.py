@@ -30,7 +30,13 @@ def init_sensors():
         for row in range(1, sheet.nrows):
             elem = {}
             for col in range(sheet.ncols):
-                elem[col] = sheet.cell_value(row, col)
+                value = sheet.cell_value(row, col)
+                if not value:
+                    elem = None
+                    break
+                elem[col] = value
+            if not elem:
+                continue
 
             street = file.replace('.xls', '').split('_')[0]
             sensor_num = file.replace('.xls', '').split('_')[-1]
