@@ -7,6 +7,11 @@ from src.db import session_maker
 from src.sensors import Sensor
 
 
+def check_sensors_data_in_db(street, sensor_num):
+    with session_maker() as session:
+        return session.query(Sensor).filter(Sensor.street == street, Sensor.sensor_num == sensor_num).first()
+
+
 def init_sensors():
     files = os.listdir(config.sensors_data_path)
 
@@ -21,7 +26,7 @@ def init_sensors():
         if rows != example:
             print(f'Rows is not ok! Rows is {rows}, need to be like {example}')
             continue
-
+        i = 1
         for row in range(1, sheet.nrows):
             elem = {}
             for col in range(sheet.ncols):
@@ -29,6 +34,11 @@ def init_sensors():
 
             street = file.replace('.xls', '').split('_')[0]
             sensor_num = file.replace('.xls', '').split('_')[-1]
+
+            if i == 1:
+                if check_sensors_data_in_db(street, sensor_num):
+                    continue
+                i += 1
 
             sensor = Sensor(
                 street=street,
