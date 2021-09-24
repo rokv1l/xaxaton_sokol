@@ -1,0 +1,26 @@
+version: '3'
+
+volumes:
+  xaxaton_base:
+
+services:
+  pg_db:
+    image: postgres
+    restart: unless-stopped
+    container_name: ${POSTGRES_HOST}
+    env_file:
+      - .env
+    tty: True
+    volumes:
+      - xaxaton_base:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    image: api
+    container_name: api
+    env_file:
+      - .env
+    restart: always
+    tty: True
