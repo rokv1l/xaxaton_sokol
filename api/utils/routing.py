@@ -2,6 +2,7 @@ import requests
 
 import config
 from exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
+from common import block_areas_to_string, mark_waypoints
 
 
 def get_routes(departure, destination, vehicle='foot', block_areas=None, alternative_routes=None):
@@ -15,8 +16,7 @@ def get_routes(departure, destination, vehicle='foot', block_areas=None, alterna
     
     if block_areas:
         payload['ch.disable'] = True
-        block_zones = [f'{block["lat"]},{block["lng"]},{block["radius"]}' for block in block_areas]
-        payload['block_area'] = ';'.join(block_zones)
+        payload['block_area'] = block_areas_to_string(block_areas)
 
     if alternative_routes:
         payload['ch.disable'] = True
@@ -44,8 +44,8 @@ def get_routes(departure, destination, vehicle='foot', block_areas=None, alterna
     routes = []
     for path in data['paths']:
         route = {
-            'coords': [{'lng': c[0], 'lat': c[1]} for c in path['points']['coordinates']],
-            'distance': path['distance'],
+            'waypoints': mark_waypoints(path['points']['coordinates']),
+            'dist': path['distance'],
             'time': path['time'],
         }
         routes.append(route)
