@@ -6,4 +6,3 @@ xlrd
 flask-cors
 psycopg2
 osmnx
-math
