@@ -11,7 +11,10 @@ def enrich_foot_route(route):
     if not transfers:
         return 
 
-    bike_segment = get_eco_route([[transfers['start']['base']], transfers['end']['base']], vehicle='bike')
+    bike_segment = get_eco_route(
+        [transfers['start']['base'], transfers['end']['base']], 
+        vehicle='bike'
+    )
         
     multi_route_waypoints = colorize(route['waypoints'][:transfers['start']['idx']-1], FOOT_COLOR)
     multi_route_waypoints.extend(colorize(bike_segment, BIKE_COLOR))
