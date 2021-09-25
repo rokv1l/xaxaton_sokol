@@ -17,3 +17,5 @@ class AggregatedSensor(base):
     time_interval = Column(Integer)
 
     aggregated_aqi = Column(Float)
+
+base.metadata.create_all(engine)
