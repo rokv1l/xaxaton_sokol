@@ -32,7 +32,6 @@ def aggregate_sensors_data():
                 try:
                     agg_sensor = AggregatedSensor(street=street_name, sensor_num=sensor_num,
                                                   lng=sensor['coords']['x'], lat=sensor['coords']['y'],
-                                                  aggregated_time=0, time_interval=0,
                                                   aggregated_aqi=sensor['pollution'])
                 except:
                     print(f'sensor {sensor_num} for {street_name} didn\'t distributed')
