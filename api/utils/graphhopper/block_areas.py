@@ -2,7 +2,7 @@ from src.db import session_maker
 from src.aggregated_sensors import AggregatedSensor
 
 
-GREEN_THRESHOLD = 66
+GREEN_THRESHOLD = 70
 YELLOW_THRESHOLD = 99
 
 
