@@ -11,7 +11,8 @@ class AggregatedSensor(base):
 
     street = Column(Text)
     sensor_num = Column(Integer)
-    coords = Column(JSON)
+    lat = Column(Float)
+    lng = Column(Float)
 
     aggregated_time = Column(DateTime)
     time_interval = Column(Integer)

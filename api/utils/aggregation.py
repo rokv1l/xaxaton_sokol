@@ -27,7 +27,8 @@ def aggregate_sensors_data(time_interval):
                     tmp = AggregatedSensor(
                         street=street,
                         sensor_num=sensor_num,
-                        coords={},
+                        lng=0,
+                        lat=0,
                         aggregated_time=aggregated_data['datetime'],
                         time_interval=time_interval,
                         aggregated_aqi=float(pd.DataFrame(aggregated_data['aqi']).describe().mean())
@@ -47,7 +48,7 @@ def add_coords_to_aggregated_sensors_data():
     g = ox.graph_from_place('Россия, Москва', network_type='walk')
 
     with session_maker() as session:
-        sensors_data = session.query(AggregatedSensor).filter(AggregatedSensor.coords == {}).all()
+        sensors_data = session.query(AggregatedSensor).filter(AggregatedSensor.lat == 0).all()
         for sensor_data in sensors_data:
             street_nodes = []
             for u, v, e in g.edges(data=True):
@@ -55,5 +56,5 @@ def add_coords_to_aggregated_sensors_data():
                     street_nodes.append(g.nodes[u])
 
             node = street_nodes[randint(0, len(street_nodes)) - 1]
-            session.query(AggregatedSensor).filter(id=sensor_data.id).update({'coords': {'lat': node['y'], 'lng': node['x']}})
+            session.query(AggregatedSensor).filter(id=sensor_data.id).update({'lat': node['y'], 'lng': node['x']})
             session.commit()
