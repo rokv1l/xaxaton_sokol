@@ -23,7 +23,7 @@ def aggregate_sensors_data(time_interval):
             sensors_data = session.query(Sensor).filter(Sensor.street == street, Sensor.sensor_num == sensor_num).all()
             aggregated_data = {}
             for sensor_data in sensors_data:
-                if aggregated_data and datetime.fromisoformat(sensor_data.measurement_datetime[:-1]) >= aggregated_data['datetime'] + timedelta(hours=time_interval):
+                if aggregated_data and sensor_data.measurement_datetime >= aggregated_data['datetime'] + timedelta(hours=time_interval):
                     AggregatedSensor(
                         street=street,
                         sensor_num=sensor_num,
@@ -37,7 +37,7 @@ def aggregate_sensors_data(time_interval):
                     aggregated_data = {}
 
                 if not aggregated_data:
-                    aggregated_data['datetime'] = datetime.fromisoformat(sensor_data.measurement_datetime[:-1])
+                    aggregated_data['datetime'] = sensor_data.measurement_datetime
                     aggregated_data['aqi'] = []
 
                 aggregated_data['aqi'].append(sensor_data.aqi)
