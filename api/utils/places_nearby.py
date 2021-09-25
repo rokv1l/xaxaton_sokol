@@ -78,7 +78,7 @@ def get_bad_zones_in_place(lat, lng):
                 bad_zones.append({
                     'lat': zone.lat,
                     'lng': zone.lng,
-                    'radius': 700,
+                    'radius': 850,
                     'pollution': zone.aggregated_aqi
                 })
     return bad_zones
