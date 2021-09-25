@@ -3,6 +3,7 @@ from math import radians, cos, sin, asin, sqrt
 from src.db import session_maker
 from src.interest_places import InterestPlace
 from src.bike_base import BikeBase
+from src.aggregated_sensors import AggregatedSensor
 
 
 def haversine(lat1, lng1, lat2, lng2):
@@ -24,6 +25,8 @@ def get_places_nearby(lat, lng, radius):
         places = session.query(InterestPlace).all()
         result = []
         for place in places:
+            if not is_place_green(place.lat, place.lng):
+                continue
             length = haversine(lat, lng, place.lat, place.lng) * 1000
             if length < radius:
                 result.append({
@@ -41,6 +44,8 @@ def get_bike_bases_nearby(lat, lng, radius):
         bike_bases = session.query(BikeBase).all()
         result = []
         for base in bike_bases:
+            if not is_place_green(base.lat, base.lng):
+                continue
             length = haversine(lat, lng, base.lat, base.lng) * 1000
             if length < radius:
                 result.append({
@@ -51,3 +56,13 @@ def get_bike_bases_nearby(lat, lng, radius):
                     'lenth': length
                 })
     return result
+
+
+def is_place_green(lat, lng):
+    with session_maker() as session:
+        red_zones = session.query(AggregatedSensor).filter(AggregatedSensor.aggregated_aqi > 70).all()
+        for zone in red_zones:
+            length = haversine(lat, lng, zone.lat, zone.lng) * 1000
+            if length < 1000:
+                return False
+    return True
