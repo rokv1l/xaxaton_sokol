@@ -46,6 +46,7 @@ def aggregate_sensors_data(time_interval):
 
 def add_coords_to_aggregated_sensors_data():
     g = ox.graph_from_place('Россия, Москва', network_type='walk')
+    print('Graph downloaded')
 
     with session_maker() as session:
         sensors_data = session.query(AggregatedSensor).filter(AggregatedSensor.lat == 0).all()
@@ -56,5 +57,5 @@ def add_coords_to_aggregated_sensors_data():
                     street_nodes.append(g.nodes[u])
 
             node = street_nodes[randint(0, len(street_nodes)) - 1]
-            session.query(AggregatedSensor).filter(id=sensor_data.id).update({'lat': node['y'], 'lng': node['x']})
+            session.query(AggregatedSensor).filter(AggregatedSensor.id == sensor_data.id).update({'lat': node['y'], 'lng': node['x']})
             session.commit()
