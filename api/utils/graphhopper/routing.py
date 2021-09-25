@@ -3,6 +3,38 @@ import requests
 import config
 from .exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
 from .common import block_areas_to_string, mark_waypoints
+from .block_areas import get_sensor_zones, yellow_and_red_zones, only_red_zones
+from utils.places_nearby import get_bad_zones_in_place
+
+
+def get_eco_routes(points, vehicle='foot'):
+    zones = get_sensor_zones()
+
+    # удаляем зоны, если какая-либо точка маршрута в плохой зоне
+    zones_to_delete = []
+    for point in points:
+        zones_to_delete.extend(get_bad_zones_in_place(point[1], point[0]))
+
+    clear_zones = []
+    for zone in zones:
+        if zone in zones_to_delete:
+            continue
+        clear_zones.append(zone)
+
+    # сначала строим с учетом красных и зеленых зон
+    yellow_red_zones = yellow_and_red_zones(clear_zones)
+    try:
+        routes = get_routes(points, vehicle, block_areas=yellow_red_zones)
+        return routes
+    # если не получилось, строим только с учетом красных зон
+    except SurroundedByRedZones:
+        red_zones = only_red_zones(clear_zones)
+        try:
+            routes = get_routes(points, vehicle, block_areas=red_zones)
+        # если опять не получилось, строим простой маршрут
+        except SurroundedByRedZones:
+            routes = get_routes(points, vehicle)
+        return routes
 
 
 def get_routes(points, vehicle='foot', block_areas=None, alternative_routes=None):
@@ -10,7 +42,6 @@ def get_routes(points, vehicle='foot', block_areas=None, alternative_routes=None
         'points': points,
         'points_encoded': False,
         'vehicle': vehicle,
-        # если True и добавить locale=ru, выдаст еще инструкции на русском
         'instructions': False,  
     }
     

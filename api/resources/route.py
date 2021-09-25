@@ -1,7 +1,5 @@
 from flask_restful import Resource, reqparse
-from utils.graphhopper import get_routes, PointInRedZone, SurroundedByRedZones
-from utils.graphhopper import get_sensor_zones, yellow_and_red_zones, only_red_zones
-from utils.places_nearby import get_bike_bases_nearby
+from utils.graphhopper import get_eco_routes
 
 
 class Route(Resource):
@@ -18,17 +16,5 @@ class Route(Resource):
         except:
             return {'error': 'invalid coordinates'}, 404
 
-        zones = get_sensor_zones()
-        yellow_red_zones = yellow_and_red_zones(zones)
-        try:
-            routes = get_routes([args['from'], args['to']], args['vehicle'], block_areas=yellow_red_zones)
-            return routes, 200
-        except PointInRedZone:
-            return {'error': 'point in red zone'}, 404
-        except SurroundedByRedZones:
-            red_zones = green_and_yellow_zones(zones)
-            try:
-                routes = get_routes([args['from'], args['to']], args['vehicle'], block_areas=red_zones)
-            except SurroundedByRedZones:
-                routes = get_routes([args['from'], args['to']], args['vehicle'])
-            return routes
+        eco_routes = get_eco_routes([args['from'], args['to']], args['vehicle'])
+        return eco_routes, 200
