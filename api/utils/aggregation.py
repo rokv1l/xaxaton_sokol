@@ -56,6 +56,6 @@ def add_coords_to_aggregated_sensors_data():
                 if e.get('name') == sensor_data.street:
                     street_nodes.append(g.nodes[u])
 
-            node = street_nodes[randint(0, len(street_nodes)) - 1]
+            node = street_nodes[randint(0, len(street_nodes) - 1)]
             session.query(AggregatedSensor).filter(AggregatedSensor.id == sensor_data.id).update({'lat': node['y'], 'lng': node['x']})
             session.commit()
