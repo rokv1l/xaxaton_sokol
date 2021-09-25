@@ -19,6 +19,8 @@ def init_sensors():
                'Давление', 'AQI', 'Формальдегид']
 
     for file in files:
+        if not file.endswith('.xls'):
+            continue
         workbook = xlrd.open_workbook(f'{config.sensors_data_path}/{file}', ignore_workbook_corruption=True)
         sheet = workbook.sheet_by_index(0)
 

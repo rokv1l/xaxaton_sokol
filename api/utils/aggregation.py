@@ -13,9 +13,10 @@ from src.aggregated_sensors import AggregatedSensor
 def aggregate_sensors_data():
     streets = defaultdict(dict)
     for file in os.listdir(config.sensors_data_path):
-        street_name = file.replace('.xls', '').split('_')[0]
-        sensor_num = file.replace('.xls', '').split('_')[1]
-        streets[street_name][sensor_num] = {'pollution': 0}
+        if file.endswith('.xls'):
+            street_name = file.replace('.xls', '').split('_')[0]
+            sensor_num = file.replace('.xls', '').split('_')[1]
+            streets[street_name][sensor_num] = {'pollution': 0}
 
     for street_name in streets:
         for sensor_num in streets[street_name]:
