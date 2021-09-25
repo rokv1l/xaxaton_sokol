@@ -63,7 +63,7 @@ def is_place_green(lat, lng):
         red_zones = session.query(AggregatedSensor).filter(AggregatedSensor.aggregated_aqi > 70).all()
         for zone in red_zones:
             length = haversine(lat, lng, zone.lat, zone.lng) * 1000
-            if length < 1000:
+            if length < 850:
                 return False
     return True
 
@@ -74,7 +74,7 @@ def get_bad_zones_in_place(lat, lng):
         bad_zones = []
         for zone in red_zones:
             length = haversine(lat, lng, zone.lat, zone.lng) * 1000
-            if length < 1000:
+            if length < 850:
                 bad_zones.append({
                     'lat': zone.lat,
                     'lng': zone.lng,
