@@ -1,4 +1,5 @@
 def colorize(route, color):
-    for point in route:
+    _route = route
+    for point in _route:
         point['color'] = color
-    return route
+    return _route
