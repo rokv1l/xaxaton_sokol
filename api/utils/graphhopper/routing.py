@@ -7,7 +7,7 @@ from .block_areas import get_sensor_zones, yellow_and_red_zones, only_red_zones
 from utils.places_nearby import get_bad_zones_in_place
 
 
-def get_eco_routes(points, vehicle='foot'):
+def get_eco_route(points, vehicle='foot'):
     zones = get_sensor_zones()
 
     # удаляем зоны, если какая-либо точка маршрута в плохой зоне
@@ -25,7 +25,7 @@ def get_eco_routes(points, vehicle='foot'):
     yellow_red_zones = yellow_and_red_zones(clear_zones)
     try:
         routes = get_routes(points, vehicle, block_areas=yellow_red_zones)
-        return routes
+        return routes[0]
     # если не получилось, строим только с учетом красных зон
     except SurroundedByRedZones:
         red_zones = only_red_zones(clear_zones)
@@ -34,7 +34,8 @@ def get_eco_routes(points, vehicle='foot'):
         # если опять не получилось, строим простой маршрут
         except SurroundedByRedZones:
             routes = get_routes(points, vehicle)
-        return routes
+            
+        return routes[0]
 
 
 def get_routes(points, vehicle='foot', block_areas=None, alternative_routes=None):
