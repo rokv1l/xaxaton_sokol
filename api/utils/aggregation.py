@@ -24,7 +24,7 @@ def aggregate_sensors_data(time_interval):
             aggregated_data = {}
             for sensor_data in sensors_data:
                 if aggregated_data and sensor_data.measurement_datetime >= aggregated_data['datetime'] + timedelta(hours=time_interval):
-                    AggregatedSensor(
+                    tmp = AggregatedSensor(
                         street=street,
                         sensor_num=sensor_num,
                         coords={},
@@ -32,7 +32,7 @@ def aggregate_sensors_data(time_interval):
                         time_interval=time_interval,
                         aggregated_aqi=float(pd.DataFrame(aggregated_data['aqi']).describe().mean())
                     )
-                    session.add(AggregatedSensor)
+                    session.add(tmp)
                     session.commit()
                     aggregated_data = {}
 

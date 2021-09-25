@@ -18,4 +18,5 @@ class AggregatedSensor(base):
 
     aggregated_aqi = Column(Float)
 
+
 base.metadata.create_all(engine)
