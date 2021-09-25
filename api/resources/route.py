@@ -30,8 +30,9 @@ class Route(Resource):
         eco_route['points'] = []
         routes.append(eco_route)
 
-        multi_route = enrich_foot_route(deepcopy(eco_route))
-        if multi_route:
-            routes.append(multi_route)
+        if not args['vehicle'] == 'foot':
+            multi_route = enrich_foot_route(deepcopy(eco_route))
+            if multi_route:
+                routes.append(multi_route)
 
         return routes, 200
