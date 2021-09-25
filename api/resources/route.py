@@ -27,6 +27,7 @@ class Route(Resource):
 
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
         eco_route = colorize(eco_route, FOOT_COLOR)
+        eco_route['points'] = []
         routes.append(eco_route)
 
         multi_route = enrich_foot_route(deepcopy(eco_route))
