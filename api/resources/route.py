@@ -1,5 +1,12 @@
+from copy import deepcopy
 from flask_restful import Resource, reqparse
 from utils.graphhopper import get_eco_route
+from utils.multi_modal import enrich_foot_route
+from utils.colors import colorize
+
+
+FOOT_COLOR = '#007bff'
+BIKE_COLOR = '#00ff55'
 
 
 class Route(Resource):
@@ -16,5 +23,14 @@ class Route(Resource):
         except:
             return {'error': 'invalid coordinates'}, 404
 
+        routes = []
+
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
-        return [eco_route], 200
+        eco_route = colorize(eco_route, FOOT_COLOR)
+        routes.append(eco_route)
+
+        multi_route = enrich_foot_route(deepcopy(eco_route))
+        if multi_route:
+            routes.append(multi_route)
+
+        return routes, 200
