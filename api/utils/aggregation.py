@@ -23,21 +23,12 @@ def aggregate_sensors_data():
                 sensors = session.query(Sensor).filter(Sensor.street == street_name, 
                                                        Sensor.sensor_num == sensor_num).all()
                 sensor_mean_aqi = np.mean([sensor.aqi for sensor in sensors])
-                streets[street_name][sensor_num] = {'pollution': sensor_mean_aqi}
-
-    for street_name in distribute_coords(streets):
-        for sensor_num in streets[street_name]:
-            with session_maker() as session:
-                sensor = streets[street_name][sensor_num]
-                try:
-                    agg_sensor = AggregatedSensor(street=street_name, sensor_num=sensor_num,
-                                                  lng=sensor['coords']['x'], lat=sensor['coords']['y'],
-                                                  aggregated_aqi=sensor['pollution'])
-                except:
-                    print(f'sensor {sensor_num} for {street_name} didn\'t distributed')
-                else:
-                    session.add(agg_sensor)
-                    session.commit()
+                print(street_name, sensor_num, sensor_mean_aqi)
+                tmp = AggregatedSensor(street=street_name, sensor_num=sensor_num,
+                                       lng=0, lat=0,
+                                       aggregated_aqi=sensor_mean_aqi)
+                session.add(tmp)
+                session.commit()
 
 
 def distribute_coords(streets):
