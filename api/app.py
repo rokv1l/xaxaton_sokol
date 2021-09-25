@@ -3,7 +3,6 @@ from flask_cors import CORS
 from flask_restful import Api
 
 from utils.init_sensors import init_sensors
-from utils.aggregation import aggregate_sensors_data, add_coords_to_aggregated_sensors_data
 from resources.hello import Hello
 from resources.route import Route
 from resources.zones import Zones
