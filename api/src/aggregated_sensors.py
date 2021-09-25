@@ -13,10 +13,7 @@ class AggregatedSensor(base):
     sensor_num = Column(Integer)
     lat = Column(Float)
     lng = Column(Float)
-
-    aggregated_time = Column(DateTime)
-    time_interval = Column(Integer)
-
+    
     aggregated_aqi = Column(Float)
 
 

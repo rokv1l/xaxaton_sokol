@@ -1,9 +1,8 @@
 import os
-from random import randint
+from collections import defaultdict
 
-import pandas as pd
+import numpy as np
 import osmnx as ox
-from datetime import datetime, timedelta
 
 import config
 from src.db import session_maker
@@ -11,51 +10,64 @@ from src.sensors import Sensor
 from src.aggregated_sensors import AggregatedSensor
 
 
-def aggregate_sensors_data(time_interval):
+def aggregate_sensors_data():
+    streets = defaultdict(dict)
+    for file in os.listdir(config.sensors_data_path):
+        street_name = file.replace('.xls', '').split('_')[0]
+        sensor_num = file.replace('.xls', '').split('_')[1]
+        streets[street_name][sensor_num] = {'pollution': 0}
 
-    files = os.listdir(config.sensors_data_path)
+    for street_name in streets:
+        for sensor_num in streets[street_name]:
+            with session_maker() as session:
+                sensors = session.query(Sensor).filter(Sensor.street == street_name, 
+                                                       Sensor.sensor_num == sensor_num).all()
+                sensor_mean_aqi = np.mean([sensor.aqi for sensor in sensors])
+                streets[street_name][sensor_num] = {'pollution': sensor_mean_aqi}
 
-    for file in files:
-        street = file.replace('.xls', '').split('_')[0]
-        sensor_num = file.replace('.xls', '').split('_')[-1]
-
-        with session_maker() as session:
-            sensors_data = session.query(Sensor).filter(Sensor.street == street, Sensor.sensor_num == sensor_num).all()
-            aggregated_data = {}
-            for sensor_data in sensors_data:
-                if aggregated_data and sensor_data.measurement_datetime >= aggregated_data['datetime'] + timedelta(hours=time_interval):
-                    tmp = AggregatedSensor(
-                        street=street,
-                        sensor_num=sensor_num,
-                        lng=0,
-                        lat=0,
-                        aggregated_time=aggregated_data['datetime'],
-                        time_interval=time_interval,
-                        aggregated_aqi=float(pd.DataFrame(aggregated_data['aqi']).describe().mean())
-                    )
-                    session.add(tmp)
+    for street_name in distribute_coords(streets):
+        for sensor_num in streets[street_name]:
+            with session_maker() as session:
+                sensor = streets[street_name][sensor_num]
+                try:
+                    agg_sensor = AggregatedSensor(street=street_name, sensor_num=sensor_num,
+                                                  lng=sensor['coords']['x'], lat=sensor['coords']['y'],
+                                                  aggregated_time=0, time_interval=0,
+                                                  aggregated_aqi=sensor['pollution'])
+                except:
+                    print(f'sensor {sensor_num} for {street_name} didn\'t distributed')
+                else:
+                    session.add(agg_sensor)
                     session.commit()
-                    aggregated_data = {}
-
-                if not aggregated_data:
-                    aggregated_data['datetime'] = sensor_data.measurement_datetime
-                    aggregated_data['aqi'] = []
-
-                aggregated_data['aqi'].append(sensor_data.aqi)
 
 
-def add_coords_to_aggregated_sensors_data():
+def distribute_coords(streets):
     g = ox.graph_from_place('Россия, Москва', network_type='walk')
     print('Graph downloaded')
 
-    with session_maker() as session:
-        sensors_data = session.query(AggregatedSensor).filter(AggregatedSensor.lat == 0).all()
-        for sensor_data in sensors_data:
-            street_nodes = []
-            for u, v, e in g.edges(data=True):
-                if e.get('name') == sensor_data.street:
-                    street_nodes.append(g.nodes[u])
+    # street name hash to real street name
+    street_name_hashes = {
+        frozenset(street_name.split()): street_name for street_name in streets.keys()
+    }
 
-            node = street_nodes[randint(0, len(street_nodes) - 1)]
-            session.query(AggregatedSensor).filter(AggregatedSensor.id == sensor_data.id).update({'lat': node['y'], 'lng': node['x']})
-            session.commit()
+    street_nodes = defaultdict(list)  # street name hash to nodes
+    for u, _, e in g.edges(data=True):
+        street_name = e.get('name')
+        if isinstance(street_name, str):
+            street_name_hash = frozenset(street_name.lower().split())
+            if street_name_hash in street_name_hashes:
+                node = g.nodes[u]
+                street_nodes[street_name_hash].append(node['x'], node['y'])
+
+    for street_name_hash, street_name in street_name_hashes.items():
+        nodes = street_nodes[street_name_hash]
+        nodes.sort()
+        total_sensors = len(streets[street_name])
+
+        sensor_num = 1
+        for i in range(0, total_sensors, len(nodes) // total_sensors):
+            sensor_coords = nodes[i]
+            streets[street_name][sensor_num]['coords'] = sensor_coords
+            sensor_num += 1
+
+    return streets
