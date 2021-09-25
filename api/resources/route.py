@@ -26,7 +26,7 @@ class Route(Resource):
         routes = []
 
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
-        eco_route['waypoints'] = colorize(eco_route, FOOT_COLOR)
+        eco_route['waypoints'] = colorize(eco_route['waypoints'], FOOT_COLOR)
         eco_route['points'] = []
         routes.append(eco_route)
 
