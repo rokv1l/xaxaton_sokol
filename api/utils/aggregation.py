@@ -66,7 +66,7 @@ def distribute_coords():
                 sensor_coords = nodes[i]
                 session.query(AggregatedSensor).filter(AggregatedSensor.street == street_name,
                                                        AggregatedSensor.sensor_num == sensor_num).update(
-                                                           {'lat': sensor_coords[0], 'lng': sensor_coords[1]}
+                                                           {'lat': sensor_coords[1], 'lng': sensor_coords[0]}
                                                        )
                 sensor_num += 1
                 print(street_name, sensor_num, sensor_coords)
