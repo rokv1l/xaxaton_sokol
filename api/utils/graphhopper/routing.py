@@ -5,9 +5,9 @@ from .exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
 from .common import block_areas_to_string, mark_waypoints
 
 
-def get_routes(departure, destination, vehicle='foot', block_areas=None, alternative_routes=None):
+def get_routes(points, vehicle='foot', block_areas=None, alternative_routes=None):
     payload = {
-        'points': [departure, destination],
+        'points': points,
         'points_encoded': False,
         'vehicle': vehicle,
         # если True и добавить locale=ru, выдаст еще инструкции на русском
