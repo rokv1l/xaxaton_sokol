@@ -4,7 +4,7 @@ import config
 from .exceptions import PointInRedZone, SurroundedByRedZones, UnknownError
 from .common import block_areas_to_string, mark_waypoints
 from .block_areas import get_sensor_zones, yellow_and_red_zones, only_red_zones
-from utils.places_nearby import get_bad_zones_in_place
+from ..places_nearby import get_bad_zones_in_place
 
 
 def get_eco_route(points, vehicle='foot'):

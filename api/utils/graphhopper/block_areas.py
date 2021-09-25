@@ -4,7 +4,7 @@ from src.aggregated_sensors import AggregatedSensor
 
 GREEN_THRESHOLD = 70
 YELLOW_THRESHOLD = 99
-RADIUS = 700
+RADIUS = 850
 
 
 def get_sensor_zones():
