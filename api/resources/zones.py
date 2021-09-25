@@ -16,7 +16,7 @@ class Zones(Resource):
             for coord in coords:
                 result["sensors"].append({
                     "center": [coord.lat, coord.lng],
-                    "radius": 1000,
+                    "radius": 700,
                     "pollution": coord.aggregated_aqi
                 })
             return result, 200
