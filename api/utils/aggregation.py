@@ -32,8 +32,8 @@ def aggregate_sensors_data():
 
 
 def distribute_coords():
-    print('start downloading graph')
-    g = ox.graph_from_place('Россия, Москва', network_type='walk')
+    print('start loading graph')
+    g = ox.load_graphml(f'{config.sensors_data_path}/G_moscow_walk.graphml')
     print('graph downloaded')
 
     streets = defaultdict(list)
@@ -52,7 +52,7 @@ def distribute_coords():
             if street_name_hash in street_name_hashes:
                 node = g.nodes[u]
                 street_name = street_name_hashes[street_name_hash]
-                street_nodes[street_name].append(node['x'], node['y'])
+                street_nodes[street_name].append([node['x'], node['y']])
 
     for street_name, nodes in street_nodes.items():
         nodes.sort()
