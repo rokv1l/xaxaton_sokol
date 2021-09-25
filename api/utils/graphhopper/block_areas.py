@@ -14,7 +14,7 @@ def get_block_areas():
             blocks.append(
                 {'lat': sensor.lat,
                  'lng': sensor.lng,
-                 'radius': 1000,
+                 'radius': 700,
                  'pollution': sensor.aggregated_aqi}
             )
     return blocks
