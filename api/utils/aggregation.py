@@ -31,14 +31,18 @@ def aggregate_sensors_data():
                 session.commit()
 
 
-def distribute_coords(streets):
+def distribute_coords():
+    print('start downloading graph')
     g = ox.graph_from_place('Россия, Москва', network_type='walk')
-    print('Graph downloaded')
+    print('graph downloaded')
 
-    # street name hash to real street name
-    street_name_hashes = {
-        frozenset(street_name.split()): street_name for street_name in streets.keys()
-    }
+    streets = defaultdict(list)
+    with session_maker() as session:
+        sensors = session.query(AggregatedSensor).all()
+        for sensor in sensors:
+            streets[sensor.street].append(sensor.sensor_num)
+
+    street_name_hashes = {frozenset(street_name.lower().split()): street_name for street_name in streets.keys()}
 
     street_nodes = defaultdict(list)  # street name hash to nodes
     for u, _, e in g.edges(data=True):
@@ -47,17 +51,22 @@ def distribute_coords(streets):
             street_name_hash = frozenset(street_name.lower().split())
             if street_name_hash in street_name_hashes:
                 node = g.nodes[u]
-                street_nodes[street_name_hash].append(node['x'], node['y'])
+                street_name = street_name_hashes[street_name_hash]
+                street_nodes[street_name].append(node['x'], node['y'])
 
-    for street_name_hash, street_name in street_name_hashes.items():
-        nodes = street_nodes[street_name_hash]
+    for street_name, nodes in street_nodes.items():
         nodes.sort()
+        total_nodes = len(nodes)
         total_sensors = len(streets[street_name])
+        step = total_nodes // total_sensors
 
-        sensor_num = 1
-        for i in range(0, total_sensors, len(nodes) // total_sensors):
-            sensor_coords = nodes[i]
-            streets[street_name][sensor_num]['coords'] = sensor_coords
-            sensor_num += 1
-
-    return streets
+        with session_maker() as session:
+            sensor_num = 1
+            for i in range(0, total_nodes, step):
+                sensor_coords = nodes[i]
+                session.query(AggregatedSensor).filter(AggregatedSensor.street == street_name,
+                                                       AggregatedSensor.sensor_num == sensor_num).update(
+                                                           {'lat': sensor_coords['y'], 'lng': sensor_coords['x']}
+                                                       )
+                sensor_num += 1
+                print(street_name, sensor_num, sensor_coords)
