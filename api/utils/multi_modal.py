@@ -3,7 +3,7 @@ from datetime import datetime
 
 from .places_nearby import get_bike_bases_nearby
 from .graphhopper import get_eco_route
-from .places_nearby import get_places_nearby, haversine
+from .places_nearby import get_places_nearby, haversine, get_green_zones
 
 FOOT_COLOR = '#007bff'
 BIKE_COLOR = '#00ff55'
@@ -58,13 +58,41 @@ def enrich_foot_route(route):
                 'lng': point['lng'],
                 'type': 'intres',
             })
+    
+    for i in (0, 2):
+        interesting_places = get_green_route(route['waypoints'][i]['waypoint'])
+        for place, point in interesting_places.items():
+            route['waypoints'].append({
+                'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
+                'color': '#4fff00'
+            })
 
+    
     return route
 
 
-def find_transfers_to_bike(route):
+def get_green_route(route):
+    total_len = len(route)
+    step = total_len // 10
+    if step == 0:
+        step = 2
+    place_to_points = defaultdict(list)
+    for i in range(0, total_len, step):
+        point = route[i]
+        print(point)
+        places = get_green_zones(point['lat'], point['lng'], 300)
+        for place in places:
+            place_to_points[(point['lat'], point['lng'])].append(place)
+
+    for place, points in place_to_points.items():
+        place_to_points[place] = min(points, 
+                                     key=lambda p: haversine(p['lat'], p['lng'], *place))
     
-    start_time = datetime.now()
+    return place_to_points
+
+
+
+def find_transfers_to_bike(route):
     total_len = len(route['waypoints'])
 
     start = int(total_len * 0.1)
@@ -82,7 +110,6 @@ def find_transfers_to_bike(route):
     if not start_base:
         return
     
-    print(f"1 {datetime.now() - start_time}")
     
     end_point_idx = None
     end_base = None
@@ -102,7 +129,6 @@ def find_transfers_to_bike(route):
     if not end_base:
         return
 
-    print(f"2 {datetime.now() - start_time}")
     return {
         'start': {'idx': start_point_idx,
                   'base': (start_base['lng'], start_base['lat'])},
