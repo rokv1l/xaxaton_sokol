@@ -42,13 +42,13 @@ def enrich_foot_route(route):
 def find_transfers_to_bike(route):
     total_len = len(route['waypoints'])
 
-    start = int(total_len * 0.2)
+    start = int(total_len * 0.1)
     start_point_idx = None
     start_base = None
 
-    for i in range(start, total_len, 4):
+    for i in range(start, total_len, 3):
         point = route['waypoints'][i]
-        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=100)
+        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=600)
         if bike_bases:
             start_point_idx = i
             start_base = bike_bases[0]
@@ -60,9 +60,9 @@ def find_transfers_to_bike(route):
     end_point_idx = None
     end_base = None
 
-    for i in range(total_len-1, start_point_idx, -4):
+    for i in range(total_len-1, start_point_idx, -3):
         point = route['waypoints'][i]
-        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=100)
+        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=600)
         if bike_bases:
             for bike_base in bike_bases:
                 if bike_base != start_base:
