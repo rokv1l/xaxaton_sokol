@@ -38,7 +38,7 @@ class Route(Resource):
                 'waypoint': green_route['waypoints'],
                 'color': '#ffed00'
             })
-
+            routes.append(green_route)
         if args['vehicle'] == 'foot' and eco_route["dist"] > 2000:
             multi_route = enrich_foot_route(deepcopy(eco_route))
             if multi_route:
