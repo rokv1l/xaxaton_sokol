@@ -25,7 +25,9 @@ class WalkingRoute(Resource):
             args['from'] = list(map(float, args['from'].split(',')))
         except:
             return {'error': 'invalid coordinates'}, 404
-
+        
+        distance *= 1000
+        
         distance = args.get('distance')
         if not distance:
             time = args.get('time')
@@ -37,7 +39,7 @@ class WalkingRoute(Resource):
             else:
                 distance = int(time * AVG_FOOT_SPEED)
                 
-        distance *= 1000
+        
         
         # нужно добавить логику получения красных зон
         try:
@@ -50,7 +52,7 @@ class WalkingRoute(Resource):
                     if multi_route:
                         routes.append(multi_route)
                 
-                route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : "#62cc00"}]
+                route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
                 routes.append(route)
             return routes, 200
         except PointInRedZone:
