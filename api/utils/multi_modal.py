@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from .places_nearby import get_bike_bases_nearby
 from .graphhopper import get_eco_route
 from .colors import colorize
@@ -7,14 +9,18 @@ BIKE_COLOR = '#00ff55'
 
 
 def enrich_foot_route(route):
+    start_time = datetime.now()
     transfers = find_transfers_to_bike(route)
     if not transfers:
         return 
-
+        
+    print(f"1 {datetime.now() - start_time}")
+    
     bike_segment = get_eco_route(
         [transfers['start']['base'], transfers['end']['base']], 
         vehicle='bike'
     )
+    print(f"2 {datetime.now() - start_time}")
     route['waypoints'] = [
         {
             "waypoints": route['waypoints'][:transfers['start']['idx']-1],
