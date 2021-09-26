@@ -76,6 +76,8 @@ def find_transfers_to_bike(route):
                     end_point_idx = i
                     end_base = bike_base
                     break
+            if end_base:
+                break
 
     if not end_base:
         return
