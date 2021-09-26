@@ -27,7 +27,7 @@ class Route(Resource):
 
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
         eco_route['points'] = []
-        routes.append(eco_route)
+#         routes.append(eco_route)
 
         if args['vehicle'] == 'foot':
             multi_route = enrich_foot_route(deepcopy(eco_route))
