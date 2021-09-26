@@ -50,8 +50,8 @@ def enrich_foot_route(route):
             })
 
             route['points'].append({
-                'lat': place[0],
-                'lng': place[1],
+                'lat': point['lat'],
+                'lng': point['lng'],
                 'type': 'intres',
             })
 
