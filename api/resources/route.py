@@ -27,15 +27,16 @@ class Route(Resource):
 
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
         eco_route['points'] = []
-        if args['vehicle'] == 'foot':
-            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : FOOT_COLOR}]
-        else:
-            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : BIKE_COLOR}]
-        routes.append(eco_route)
 
         if args['vehicle'] == 'foot':
             multi_route = enrich_foot_route(deepcopy(eco_route))
             if multi_route:
                 routes.append(multi_route)
+        
+        if args['vehicle'] == 'foot':
+            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : FOOT_COLOR}]
+        else:
+            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : BIKE_COLOR}]
+        routes.append(eco_route)
 
         return routes, 200
