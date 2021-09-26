@@ -75,7 +75,7 @@ def find_transfers_to_bike(route):
 
     return {
         'start': {'idx': start_point_idx,
-                  'base': (start_base['lat'], start_base['lng'])},
+                  'base': (start_base['lng'], start_base['lat'])},
         'end': {'idx': end_point_idx,
-                'base': (end_base['lat'], end_base['lng'])}
+                'base': ( end_base['lng'], end_base['lat'])}
     }
