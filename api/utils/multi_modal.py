@@ -116,10 +116,10 @@ def find_interesting_places(route):
         point = route['waypoints'][i]
         places = get_places_nearby(point['lat'], point['lng'], 300)
         for place in places:
-            place_to_points[point].append(place)
+            place_to_points[(point['lat'], point['lng'])].append(place)
 
     for place, points in place_to_points.items():
         place_to_points[place] = min(points, 
-                                     key=lambda p: haversine(p['lat'], p['lng'], place['lat'], place['lng']))
+                                     key=lambda p: haversine(p['lat'], p['lng'], *place))
     
     return place_to_points
