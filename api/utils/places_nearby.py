@@ -82,6 +82,7 @@ def get_green_zones(lat, lng, radius):
                     'lng': base.lng,
                     'lenth': length
                 })
+                break
     return result
 
 def get_bad_zones_in_place(lat, lng):
