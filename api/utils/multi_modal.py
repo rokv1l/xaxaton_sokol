@@ -18,6 +18,8 @@ def enrich_foot_route(route):
         [transfers['start']['base'], transfers['end']['base']], 
         vehicle='bike'
     )
+    print(route['waypoints'][:transfers['start']['idx']][-1])
+    print(transfers['start']['base'])
     route['waypoints'] = [
         {
             "waypoint": route['waypoints'][:transfers['start']['idx']],
