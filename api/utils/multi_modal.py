@@ -23,15 +23,15 @@ def enrich_foot_route(route):
     print(f"2 {datetime.now() - start_time}")
     route['waypoints'] = [
         {
-            "waypoints": route['waypoints'][:transfers['start']['idx']-1],
+            "waypoint": route['waypoints'][:transfers['start']['idx']-1],
             "color": FOOT_COLOR,
         },
         {
-            "waypoints": bike_segment['waypoints'],
+            "waypoint": bike_segment['waypoints'],
             "color": BIKE_COLOR,
         },
         {
-            "waypoints": route['waypoints'][transfers['end']['idx']+1:],
+            "waypoint": route['waypoints'][transfers['end']['idx']+1:],
             "color": FOOT_COLOR,
         },
     ]
