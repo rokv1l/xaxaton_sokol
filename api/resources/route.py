@@ -32,7 +32,7 @@ class Route(Resource):
                 "type": "intres"
             }]
 
-        if args['vehicle'] == 'foot' and eco_route["dict"] > 2000:
+        if args['vehicle'] == 'foot' and eco_route["dist"] > 2000:
             multi_route = enrich_foot_route(deepcopy(eco_route))
             if multi_route:
                 routes.append(multi_route)
