@@ -30,16 +30,7 @@ class Route(Resource):
                 "lng": 37.57995,
                 "type": "intres"
             }]
-        
-        green_place = get_green_route(eco_route['waypoints'])
-        for place, point in green_place.items():
-            green_route = get_eco_route([[point['lng'], point['lat']], list(reversed(place))])
-            green_route['waypoints'].append({
-                'waypoint': green_route['waypoints'],
-                'color': '#ffed00'
-            })
-            routes.append(green_route)
-            
+                    
         if args['vehicle'] == 'foot' and eco_route["dist"] > 2000:
             multi_route = enrich_foot_route(deepcopy(eco_route))
             if multi_route:
