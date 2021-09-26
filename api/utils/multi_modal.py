@@ -23,8 +23,8 @@ def enrich_foot_route(route):
     route['waypoints'] = multi_route_waypoints
 
     route['points'] = [
-        {'lat': transfers['start']['base']['lat'], 'lng': transfers['start']['base']['lng'], 'type': 'bike'},
-        {'lat': transfers['end']['base']['lat'], 'lng': transfers['end']['base']['lng'], 'type': 'bike'}
+        {'lat': transfers['start']['base'][0], 'lng': transfers['start']['base'][1], 'type': 'bike'},
+        {'lat': transfers['end']['base'][0], 'lng': transfers['end']['base'][1], 'type': 'bike'}
     ]
 
     return route
