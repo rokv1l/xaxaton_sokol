@@ -71,20 +71,6 @@ def is_place_green(lat, lng):
 def get_green_zones(lat, lng):
     with session_maker() as session:
         green_zones = session.query(AggregatedSensor).filter(AggregatedSensor.aggregated_aqi < 70).all()
-        zones_res = []
-        for zone in green_zones:
-            length = haversine(lat, lng, zone.lat, zone.lng) * 1000
-            if length < 850:
-                zones_res.append({
-                    'lat': zone.lat,
-                    'lng': zone.lng,
-                    'radius': 850,
-                    'pollution': zone.aggregated_aqi
-                })
-    return zones_res
-
-    with session_maker() as session:
-        green_zones = session.query(AggregatedSensor).filter(AggregatedSensor.aggregated_aqi < 70).all()
         result = []
         for base in green_zones:
             if not is_place_green(base.lat, base.lng):
