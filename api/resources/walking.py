@@ -47,7 +47,7 @@ class WalkingRoute(Resource):
             routes = []
             for seed in range(args['limit']):
                 route = get_walking_route(args['from'], distance, args['vehicle'], seed=seed)
-                
+                route["points"] = []
                 if len(routes) > 2:
                     route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
                     routes.append(route)
