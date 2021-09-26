@@ -41,18 +41,19 @@ def enrich_foot_route(route):
         {'lat': transfers['end']['base'][1], 'lng': transfers['end']['base'][0], 'type': 'bike'}
     ]
 
-    interesting_places = find_interesting_places(_route)
-    for place, point in interesting_places.items():
-        route['waypoints'].append({
-            'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
-            'color': '#7027b6'
-        })
+    for i in (0, 2):
+        interesting_places = find_interesting_places(route['waypoint'])
+        for place, point in interesting_places.items():
+            route['waypoints'].append({
+                'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
+                'color': '#7027b6'
+            })
 
-        route['points'].append({
-            'lat': place[0],
-            'lng': place[1],
-            'type': 'intres',
-        })
+            route['points'].append({
+                'lat': place[0],
+                'lng': place[1],
+                'type': 'intres',
+            })
 
     return route
 
