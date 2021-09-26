@@ -57,7 +57,7 @@ def enrich_foot_route(route):
                 })
 
         for i in (0, 2):
-            green_place = get_green_route(route['waypoints'][i]['waypoint'])
+            green_place = get_green_route(_route['waypoints'][i]['waypoint'])
             for place, point in green_place.items():
                 route['waypoints'].append({
                     'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
@@ -77,7 +77,7 @@ def enrich_foot_route(route):
                 'type': 'intres',
             })
             
-        green_place = get_green_route(route['waypoints'])
+        green_place = get_green_route(_route['waypoints'])
         for place, point in green_place.items():
             route['waypoints'].append({
                 'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
