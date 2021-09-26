@@ -89,11 +89,14 @@ def enrich_foot_route(route):
 
 def get_green_route(route):
     total_len = len(route)
-    step = total_len // 10
+    
+    start = int(total_len * 0.17)
+    end = int(total_len*0.17)
+    step = total_len // 7
     if step == 0:
         step = 2
     place_to_points = defaultdict(list)
-    for i in range(0, total_len, step):
+    for i in range(start, end, step):
         point = route[i]
         print(point)
         places = get_green_zones(point['lat'], point['lng'], 1200)
@@ -111,7 +114,7 @@ def get_green_route(route):
 def find_transfers_to_bike(route):
     total_len = len(route['waypoints'])
 
-    start = int(total_len * 0.1)
+    start = int(total_len * 0.17)
     start_point_idx = None
     start_base = None
 
