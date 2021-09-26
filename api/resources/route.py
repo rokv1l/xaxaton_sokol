@@ -33,10 +33,7 @@ class Route(Resource):
             if multi_route:
                 routes.append(multi_route)
         
-        if args['vehicle'] == 'foot':
-            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : FOOT_COLOR}]
-        else:
-            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : BIKE_COLOR}]
+        eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : "#62cc00"}]
         routes.append(eco_route)
 
         return routes, 200
