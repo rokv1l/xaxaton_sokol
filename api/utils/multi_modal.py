@@ -42,7 +42,7 @@ def enrich_foot_route(route):
     ]
 
     for i in (0, 2):
-        interesting_places = find_interesting_places(route['waypoint'])
+        interesting_places = find_interesting_places(route['waypoints'][i]['waypoint'])
         for place, point in interesting_places.items():
             route['waypoints'].append({
                 'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
