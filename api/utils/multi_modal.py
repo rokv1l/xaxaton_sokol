@@ -56,34 +56,14 @@ def enrich_foot_route(route):
                     'type': 'intres',
                 })
 
-        for i in (0, 2):
-            green_place = get_green_route(_route['waypoints'][i]['waypoint'])
-            for place, point in green_place.items():
-                route['waypoints'].append({
-                    'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
-                    'color': '#ffed00'
-                })
-    else:
-        interesting_places = find_interesting_places(route['waypoints'])
-        for place, point in interesting_places.items():
-            route['waypoints'].append({
-                'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
-                'color': '#7027b6'
-            })
-
-            route['points'].append({
-                'lat': point['lat'],
-                'lng': point['lng'],
-                'type': 'intres',
-            })
-            
-        green_place = get_green_route(_route['waypoints'])
-        for place, point in green_place.items():
-            route['waypoints'].append({
-                'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
-                'color': '#ffed00'
-            })
-    
+#         for i in (0, 2):
+#             green_place = get_green_route(_route['waypoints'][i]['waypoint'])
+#             for place, point in green_place.items():
+#                 route['waypoints'].append({
+#                     'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
+#                     'color': '#ffed00'
+#                 })
+        
     return route
 
 
