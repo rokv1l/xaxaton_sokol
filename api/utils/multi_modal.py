@@ -12,41 +12,59 @@ BIKE_COLOR = '#00ff55'
 def enrich_foot_route(route):
     _route = route.copy()
     transfers = find_transfers_to_bike(route)
-    if not transfers:
-        return 
-        
-    
-    bike_segment = get_eco_route(
-        [transfers['start']['base'], transfers['end']['base']], 
-        vehicle='bike'
-    )
-    segment_1 = get_eco_route([tuple(route['waypoints'][0].values()),  transfers['start']['base']], vehicle="foot")
-    segment_2 = get_eco_route([transfers['end']['base'], tuple(route['waypoints'][-1].values())], vehicle="foot")
-    route['waypoints'] = [
-        {
-            "waypoint": segment_1["waypoints"],
-            "color": FOOT_COLOR,
-        },
-        {
-            "waypoint": bike_segment['waypoints'],
-            "color": BIKE_COLOR,
-        },
-        {
-            "waypoint": segment_2["waypoints"],
-            "color": FOOT_COLOR,
-        },
-    ]
-    route['dist'] = bike_segment['dist'] + segment_1['dist'] + segment_2['dist']
-    
-    route['time'] = bike_segment['time'] + segment_1['time'] + segment_2['time']
+    if transfers:
+        bike_segment = get_eco_route(
+            [transfers['start']['base'], transfers['end']['base']], 
+            vehicle='bike'
+        )
+        segment_1 = get_eco_route([tuple(route['waypoints'][0].values()),  transfers['start']['base']], vehicle="foot")
+        segment_2 = get_eco_route([transfers['end']['base'], tuple(route['waypoints'][-1].values())], vehicle="foot")
+        route['waypoints'] = [
+            {
+                "waypoint": segment_1["waypoints"],
+                "color": FOOT_COLOR,
+            },
+            {
+                "waypoint": bike_segment['waypoints'],
+                "color": BIKE_COLOR,
+            },
+            {
+                "waypoint": segment_2["waypoints"],
+                "color": FOOT_COLOR,
+            },
+        ]
+        route['dist'] = bike_segment['dist'] + segment_1['dist'] + segment_2['dist']
 
-    route['points'] = [
-        {'lat': transfers['start']['base'][1], 'lng': transfers['start']['base'][0], 'type': 'bike'},
-        {'lat': transfers['end']['base'][1], 'lng': transfers['end']['base'][0], 'type': 'bike'}
-    ]
+        route['time'] = bike_segment['time'] + segment_1['time'] + segment_2['time']
 
-    for i in (0, 2):
-        interesting_places = find_interesting_places(route['waypoints'][i]['waypoint'])
+        route['points'] = [
+            {'lat': transfers['start']['base'][1], 'lng': transfers['start']['base'][0], 'type': 'bike'},
+            {'lat': transfers['end']['base'][1], 'lng': transfers['end']['base'][0], 'type': 'bike'}
+        ]
+
+        for i in (0, 2):
+            interesting_places = find_interesting_places(route['waypoints'][i]['waypoint'])
+            for place, point in interesting_places.items():
+                route['waypoints'].append({
+                    'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
+                    'color': '#7027b6'
+                })
+
+                route['points'].append({
+                    'lat': point['lat'],
+                    'lng': point['lng'],
+                    'type': 'intres',
+                })
+
+        for i in (0, 2):
+            green_place = get_green_route(route['waypoints'][i]['waypoint'])
+            for place, point in green_place.items():
+                route['waypoints'].append({
+                    'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
+                    'color': '#ffed00'
+                })
+    else:
+        interesting_places = find_interesting_places(route['waypoints'])
         for place, point in interesting_places.items():
             route['waypoints'].append({
                 'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
@@ -58,15 +76,13 @@ def enrich_foot_route(route):
                 'lng': point['lng'],
                 'type': 'intres',
             })
-    
-    for i in (0, 2):
-        green_place = get_green_route(route['waypoints'][i]['waypoint'])
+            
+        green_place = get_green_route(route['waypoints'])
         for place, point in green_place.items():
             route['waypoints'].append({
                 'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
                 'color': '#ffed00'
             })
-
     
     return route
 
