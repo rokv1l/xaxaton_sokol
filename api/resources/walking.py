@@ -26,9 +26,10 @@ class WalkingRoute(Resource):
         except:
             return {'error': 'invalid coordinates'}, 404
         
+        distance = args.get('distance')
+        
         distance *= 1000
         
-        distance = args.get('distance')
         if not distance:
             time = args.get('time')
             if not time:
