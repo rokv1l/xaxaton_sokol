@@ -26,7 +26,7 @@ def enrich_foot_route(route):
             "color": FOOT_COLOR,
         },
         {
-            "waypoint": get_eco_route([route['waypoints'][:transfers['start']['idx']][-1],transfers['start']['base']], vehicle="foot"),
+            "waypoint": get_eco_route([tuple(route['waypoints'][:transfers['start']['idx']][-1].values()),transfers['start']['base']], vehicle="foot"),
             "color": FOOT_COLOR,
         },
         {
@@ -34,7 +34,7 @@ def enrich_foot_route(route):
             "color": BIKE_COLOR,
         },
         {
-            "waypoint": get_eco_route([transfers['end']['base'], route['waypoints'][transfers['end']['idx']:][1]], vehicle="foot"),
+            "waypoint": get_eco_route([transfers['end']['base'], tuple(route['waypoints'][transfers['end']['idx']:][1].values())], vehicle="foot"),
             "color": FOOT_COLOR,
         },
         {
