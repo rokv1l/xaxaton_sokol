@@ -10,6 +10,7 @@ BIKE_COLOR = '#00ff55'
 
 
 def enrich_foot_route(route):
+    _route = route
     transfers = find_transfers_to_bike(route)
     if not transfers:
         return 
@@ -40,7 +41,7 @@ def enrich_foot_route(route):
         {'lat': transfers['end']['base'][1], 'lng': transfers['end']['base'][0], 'type': 'bike'}
     ]
 
-    interesting_places = find_interesting_places(route)
+    interesting_places = find_interesting_places(_route)
     for place, point in interesting_places.items():
         route['waypoints'].append({
             'waypoint': get_eco_route([[point['lng'], point['lat'],
