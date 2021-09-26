@@ -18,7 +18,7 @@ def enrich_foot_route(route):
     
     multi_route_waypoints = colorize(route['waypoints'][:transfers['start']['idx']-1], FOOT_COLOR)
     multi_route_waypoints.extend(colorize(bike_segment['waypoints'], BIKE_COLOR))
-    multi_route_waypoints.extend(colorize(route['waypoints'][transfers['end']['idx']+1:]))
+    multi_route_waypoints.extend(colorize(route['waypoints'][transfers['end']['idx']+1:], FOOT_COLOR))
 
     route['waypoints'] = multi_route_waypoints
 
