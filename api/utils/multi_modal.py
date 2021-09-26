@@ -1,8 +1,9 @@
+from collections import defaultdict
 from datetime import datetime
 
 from .places_nearby import get_bike_bases_nearby
 from .graphhopper import get_eco_route
-from .colors import colorize
+from .places_nearby import get_places_nearby, haversine
 
 FOOT_COLOR = '#007bff'
 BIKE_COLOR = '#00ff55'
@@ -38,6 +39,20 @@ def enrich_foot_route(route):
         {'lat': transfers['start']['base'][1], 'lng': transfers['start']['base'][0], 'type': 'bike'},
         {'lat': transfers['end']['base'][1], 'lng': transfers['end']['base'][0], 'type': 'bike'}
     ]
+
+    interesting_places = find_interesting_places(route)
+    for place, point in interesting_places.items():
+        route['waypoints'].append({
+            'waypoint': get_eco_route([[point['lng'], point['lat'],
+                                        place['lng'], place['lat']]])['waypoints'],
+            'color': FOOT_COLOR
+        })
+
+        route['points'].append({
+            'lat': place['lat'],
+            'lng': place['lng'],
+            'type': 'intres',
+        })
 
     return route
 
@@ -89,3 +104,21 @@ def find_transfers_to_bike(route):
         'end': {'idx': end_point_idx,
                 'base': ( end_base['lng'], end_base['lat'])}
     }
+
+
+def find_interesting_places(route):
+    total_len = len(route['waypoints'])
+    step = total_len // 10
+
+    place_to_points = defaultdict(list)
+    for i in range(0, total_len, step):
+        point = route['waypoints'][i]
+        places = get_places_nearby(point['lat'], point['lng'], 300)
+        for place in places:
+            place_to_points[point].append(place)
+
+    for place, points in place_to_points.items():
+        place_to_points[place] = min(points, 
+                                     key=lambda p: haversine(p['lat'], p['lng'], place['lat'], place['lng']))
+    
+    return place_to_points
