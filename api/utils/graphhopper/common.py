@@ -4,4 +4,4 @@ def block_areas_to_string(block_areas):
 
 
 def mark_waypoints(coordinates):
-    return [{'lng': coords[0], 'lat': coords[1]} for coords in coordinates]
+    return [{'lng': coords[1], 'lat': coords[0]} for coords in coordinates]
