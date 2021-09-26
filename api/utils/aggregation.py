@@ -72,3 +72,4 @@ def distribute_coords():
                 sensor_num += 1
                 print(street_name, sensor_num, sensor_coords)
             session.commit()
+    print('All systems initialized, its ready to work!')
