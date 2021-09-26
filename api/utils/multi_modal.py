@@ -114,7 +114,7 @@ def find_interesting_places(route):
         step = 2
     place_to_points = defaultdict(list)
     for i in range(0, total_len, step):
-        point = route['waypoints'][i]
+        point = route[i]
         print(point)
         places = get_places_nearby(point['lat'], point['lng'], 300)
         for place in places:
