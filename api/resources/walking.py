@@ -3,7 +3,7 @@ from copy import deepcopy
 from flask_restful import Resource, reqparse
 
 from utils.multi_modal import enrich_foot_route
-from utils.graphhopper import get_walking_route, PointInRedZone, SurroundedByRedZones
+from utils.graphhopper import get_eco_walking_route
 
 
 AVG_BIKE_SPEED = 250  # м/мин
@@ -39,30 +39,21 @@ class WalkingRoute(Resource):
                 distance = int(time * AVG_BIKE_SPEED)
             else:
                 distance = int(time * AVG_FOOT_SPEED)
-                
         
-        
-        # нужно добавить логику получения красных зон
-        try:
-            routes = []
-            for seed in range(args['limit']):
-                route = get_walking_route(args['from'], distance, args['vehicle'], seed=seed)
-                route["points"] = []
-                if len(routes) > 2:
-                    route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
-                    routes.append(route)
-                    break
-                
-                if args['vehicle'] == 'foot':
-                    multi_route = enrich_foot_route(deepcopy(route))
-                    if multi_route:
-                        routes.append(multi_route)
-                
+        routes = []
+        for seed in range(args['limit']):
+            route = get_eco_walking_route(args['from'], distance, args['vehicle'], seed=seed)
+            route["points"] = []
+            if len(routes) > 2:
                 route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
                 routes.append(route)
-            return routes, 200
-        except PointInRedZone:
-            return {'error': 'point in red zone'}, 404
-        except SurroundedByRedZones:
-            return {'error': 'surrounded'}, 404
-        
+                break
+            
+            if args['vehicle'] == 'foot':
+                multi_route = enrich_foot_route(deepcopy(route))
+                if multi_route:
+                    routes.append(multi_route)
+            
+            route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
+            routes.append(route)
+        return routes, 200
