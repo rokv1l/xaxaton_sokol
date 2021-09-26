@@ -10,7 +10,7 @@ BIKE_COLOR = '#00ff55'
 
 
 def enrich_foot_route(route):
-    _route = route
+    _route = route.copy()
     transfers = find_transfers_to_bike(route)
     if not transfers:
         return 
