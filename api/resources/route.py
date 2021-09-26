@@ -28,9 +28,9 @@ class Route(Resource):
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
         eco_route['points'] = []
         if args['vehicle'] == 'foot':
-            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"] "color" : FOOT_COLOR}]
+            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : FOOT_COLOR}]
         else:
-            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"] "color" : BIKE_COLOR}]
+            eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : BIKE_COLOR}]
         routes.append(eco_route)
 
         if args['vehicle'] == 'foot':
