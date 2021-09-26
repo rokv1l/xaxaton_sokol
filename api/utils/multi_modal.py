@@ -20,7 +20,7 @@ def enrich_foot_route(route):
     )
     route['waypoints'] = [
         {
-            "waypoint": route['waypoints'][:transfers['start']['idx']-1],
+            "waypoint": route['waypoints'][:transfers['start']['idx']],
             "color": FOOT_COLOR,
         },
         {
@@ -28,7 +28,7 @@ def enrich_foot_route(route):
             "color": BIKE_COLOR,
         },
         {
-            "waypoint": route['waypoints'][transfers['end']['idx']+1:],
+            "waypoint": route['waypoints'][transfers['end']['idx']:],
             "color": FOOT_COLOR,
         },
     ]
