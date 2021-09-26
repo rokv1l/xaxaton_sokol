@@ -23,16 +23,21 @@ class Route(Resource):
         except:
             return {'error': 'invalid coordinates'}, 404
 
-        routes = []
+        routes = [{
+                "lat": 55.74603,
+                "lng": 37.57995,
+                "type": "intres"
+            }]
 
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
-        eco_route['waypoints'] = colorize(eco_route['waypoints'], FOOT_COLOR)
         eco_route['points'] = []
-        routes.append(eco_route)
 
         if args['vehicle'] == 'foot':
             multi_route = enrich_foot_route(deepcopy(eco_route))
             if multi_route:
                 routes.append(multi_route)
+        
+        eco_route["waypoints"] = [{ "waypoint" : eco_route["waypoints"], "color" : "#62cc00"}]
+        routes.append(eco_route)
 
         return routes, 200

@@ -34,7 +34,7 @@ def aggregate_sensors_data():
 
 def distribute_coords():
     print('start loading graph')
-    g = ox.load_graphml(f'{config.sensors_data_path}/G_moscow_walk.graphml')
+    g = ox.graph_from_place('Moscow, Russia', network_type='walk')
     print('graph downloaded')
 
     streets = defaultdict(list)
@@ -72,3 +72,4 @@ def distribute_coords():
                 sensor_num += 1
                 print(street_name, sensor_num, sensor_coords)
             session.commit()
+    print('All systems initialized, its ready to work!')

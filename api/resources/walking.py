@@ -1,5 +1,10 @@
+from copy import deepcopy
+
 from flask_restful import Resource, reqparse
+
+from utils.multi_modal import enrich_foot_route
 from utils.graphhopper import get_walking_route, PointInRedZone, SurroundedByRedZones
+
 
 AVG_BIKE_SPEED = 250  # м/мин
 AVG_FOOT_SPEED = 100  # м/мин
@@ -20,8 +25,11 @@ class WalkingRoute(Resource):
             args['from'] = list(map(float, args['from'].split(',')))
         except:
             return {'error': 'invalid coordinates'}, 404
-
+        
         distance = args.get('distance')
+        
+        distance *= 1000
+        
         if not distance:
             time = args.get('time')
             if not time:
@@ -31,15 +39,30 @@ class WalkingRoute(Resource):
                 distance = int(time * AVG_BIKE_SPEED)
             else:
                 distance = int(time * AVG_FOOT_SPEED)
-
+                
+        
+        
         # нужно добавить логику получения красных зон
         try:
             routes = []
             for seed in range(args['limit']):
                 route = get_walking_route(args['from'], distance, args['vehicle'], seed=seed)
+                route["points"] = []
+                if len(routes) > 2:
+                    route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
+                    routes.append(route)
+                    break
+                
+                if args['vehicle'] == 'foot':
+                    multi_route = enrich_foot_route(deepcopy(route))
+                    if multi_route:
+                        routes.append(multi_route)
+                
+                route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
                 routes.append(route)
             return routes, 200
         except PointInRedZone:
             return {'error': 'point in red zone'}, 404
         except SurroundedByRedZones:
             return {'error': 'surrounded'}, 404
+        
