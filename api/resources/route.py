@@ -23,7 +23,11 @@ class Route(Resource):
         except:
             return {'error': 'invalid coordinates'}, 404
 
-        routes = []
+        routes = [{
+                "lat": 55.74603,
+                "lng": 37.57995,
+                "type": "intres"
+            }]
 
         eco_route = get_eco_route([args['from'], args['to']], args['vehicle'])
         eco_route['points'] = []
