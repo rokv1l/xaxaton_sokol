@@ -32,12 +32,15 @@ def enrich_foot_route(route):
             "color": BIKE_COLOR,
         },
         {
-            "waypoint": ["waypoints"],
+            "waypoint": segment_2["waypoints"],
             "color": FOOT_COLOR,
         },
     ]
-    route['dist'] = bike_segment['distance'] + segment_1['distance'] + segment_2['distance']
-    route['time'] = bike_segment['time'] + segment_1['time'] + segment_2['time']
+    route['dist'] = bike_segment['distance'] 
+    route['dist'] += segment_1['distance'] + segment_2['distance']
+    
+    route['time'] = bike_segment['time'] 
+    route['time'] += segment_1['time'] + segment_2['time']
 
     route['points'] = [
         {'lat': transfers['start']['base'][1], 'lng': transfers['start']['base'][0], 'type': 'bike'},
