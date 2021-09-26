@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from flask_restful import Resource, reqparse
 
 from utils.multi_modal import enrich_foot_route
@@ -44,7 +46,7 @@ class WalkingRoute(Resource):
                 route = get_walking_route(args['from'], distance, args['vehicle'], seed=seed)
                 
                 if args['vehicle'] == 'foot':
-                    multi_route = enrich_foot_route(deepcopy(eco_route))
+                    multi_route = enrich_foot_route(deepcopy(route))
                     if multi_route:
                         routes.append(multi_route)
                 
