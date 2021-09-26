@@ -109,7 +109,8 @@ def find_transfers_to_bike(route):
 def find_interesting_places(route):
     total_len = len(route['waypoints'])
     step = total_len // 10
-
+    if step == 0:
+        step = 2
     place_to_points = defaultdict(list)
     for i in range(0, total_len, step):
         point = route['waypoints'][i]
