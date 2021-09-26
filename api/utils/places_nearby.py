@@ -68,7 +68,7 @@ def is_place_green(lat, lng):
     return True
 
 
-def get_green_zones(lat, lng):
+def get_green_zones(lat, lng, radius):
     with session_maker() as session:
         green_zones = session.query(AggregatedSensor).filter(AggregatedSensor.aggregated_aqi < 70).all()
         result = []
