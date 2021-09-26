@@ -64,7 +64,7 @@ def find_transfers_to_bike(route):
         point = route['waypoints'][i]
         bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=600)
         if bike_bases:
-            for bike_base in bike_bases
+            for bike_base in bike_bases:
                 if bike_base["address"] != start_base["address"]:
                     end_point_idx = i
                     end_base = bike_base
