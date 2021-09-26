@@ -15,12 +15,21 @@ def enrich_foot_route(route):
         [transfers['start']['base'], transfers['end']['base']], 
         vehicle='bike'
     )
-    
-    multi_route_waypoints = colorize(route['waypoints'][:transfers['start']['idx']-1], FOOT_COLOR)
-    multi_route_waypoints.extend(colorize(bike_segment['waypoints'], BIKE_COLOR))
-    multi_route_waypoints.extend(colorize(route['waypoints'][transfers['end']['idx']+1:], FOOT_COLOR))
+    route['waypoints'] = [
+        {
+            "waypoints": route['waypoints'][:transfers['start']['idx']-1],
+            "color": FOOT_COLOR,
+        },
+        {
+            "waypoints": bike_segment['waypoints'],
+            "color": BIKE_COLOR,
+        },
+        {
+            "waypoints": route['waypoints'][transfers['end']['idx']+1:],
+            "color": FOOT_COLOR,
+        },
+    ]
 
-    route['waypoints'] = multi_route_waypoints
 
     route['points'] = [
         {'lat': transfers['start']['base'][0], 'lng': transfers['start']['base'][1], 'type': 'bike'},
@@ -33,13 +42,13 @@ def enrich_foot_route(route):
 def find_transfers_to_bike(route):
     total_len = len(route['waypoints'])
 
-    start = int(total_len * 0.1)
+    start = int(total_len * 0.2)
     start_point_idx = None
     start_base = None
 
-    for i in range(start, total_len, 2):
+    for i in range(start, total_len, 4):
         point = route['waypoints'][i]
-        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=300)
+        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=400)
         if bike_bases:
             start_point_idx = i
             start_base = bike_bases[0]
@@ -51,9 +60,9 @@ def find_transfers_to_bike(route):
     end_point_idx = None
     end_base = None
 
-    for i in range(total_len-1, start_point_idx, -2):
+    for i in range(total_len-1, start_point_idx, -4):
         point = route['waypoints'][i]
-        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=300)
+        bike_bases = get_bike_bases_nearby(point['lat'], point['lng'], radius=400)
         if bike_bases:
             for bike_base in bike_bases:
                 if bike_base != start_base:
