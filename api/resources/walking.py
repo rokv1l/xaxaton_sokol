@@ -48,14 +48,16 @@ class WalkingRoute(Resource):
             for seed in range(args['limit']):
                 route = get_walking_route(args['from'], distance, args['vehicle'], seed=seed)
                 
+                if len(routes) > 2:
+                    route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
+                    routes.append(route)
+                    break
+                
                 if args['vehicle'] == 'foot':
                     multi_route = enrich_foot_route(deepcopy(route))
                     if multi_route:
                         routes.append(multi_route)
                 
-                if len(routes) > 2:
-                    break
-                    
                 route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
                 routes.append(route)
             return routes, 200
