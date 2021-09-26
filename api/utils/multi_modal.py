@@ -9,18 +9,15 @@ BIKE_COLOR = '#00ff55'
 
 
 def enrich_foot_route(route):
-    start_time = datetime.now()
     transfers = find_transfers_to_bike(route)
     if not transfers:
         return 
         
-    print(f"1 {datetime.now() - start_time}")
     
     bike_segment = get_eco_route(
         [transfers['start']['base'], transfers['end']['base']], 
         vehicle='bike'
     )
-    print(f"2 {datetime.now() - start_time}")
     route['waypoints'] = [
         {
             "waypoint": route['waypoints'][:transfers['start']['idx']-1],
@@ -46,6 +43,8 @@ def enrich_foot_route(route):
 
 
 def find_transfers_to_bike(route):
+    
+    start_time = datetime.now()
     total_len = len(route['waypoints'])
 
     start = int(total_len * 0.1)
@@ -63,6 +62,8 @@ def find_transfers_to_bike(route):
     if not start_base:
         return
     
+    print(f"1 {datetime.now() - start_time}")
+    
     end_point_idx = None
     end_base = None
 
@@ -79,6 +80,7 @@ def find_transfers_to_bike(route):
     if not end_base:
         return
 
+    print(f"2 {datetime.now() - start_time}")
     return {
         'start': {'idx': start_point_idx,
                   'base': (start_base['lng'], start_base['lat'])},
