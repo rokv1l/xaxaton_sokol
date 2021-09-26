@@ -76,7 +76,10 @@ def get_routes(points, vehicle='foot', block_areas=None, alternative_routes=None
     routes = []
     for path in data['paths']:
         route = {
-            'waypoints': mark_waypoints(path['points']['coordinates']),
+            'waypoints': [
+                "waypoint": mark_waypoints(path['points']['coordinates']),
+                "color": "#007BFF"
+            ],
             'dist': path['distance'],
             'time': path['time'],
         }
