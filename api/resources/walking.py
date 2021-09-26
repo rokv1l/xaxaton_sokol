@@ -55,6 +55,8 @@ class WalkingRoute(Resource):
                 
                 route["waypoints"] = [{ "waypoint" : route["waypoints"], "color" : "#62cc00"}]
                 routes.append(route)
+                if len(routes) > 3:
+                    break
             return routes, 200
         except PointInRedZone:
             return {'error': 'point in red zone'}, 404
