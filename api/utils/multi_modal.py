@@ -20,9 +20,11 @@ def enrich_foot_route(route):
         [transfers['start']['base'], transfers['end']['base']], 
         vehicle='bike'
     )
+    segment_1 = get_eco_route([tuple(route['waypoints'][0].values()),  transfers['start']['base']], vehicle="foot")
+    segment_2 = get_eco_route([transfers['end']['base'], tuple(route['waypoints'][-1].values())], vehicle="foot")
     route['waypoints'] = [
         {
-            "waypoint": get_eco_route([tuple(route['waypoints'][0].values()),  transfers['start']['base']], vehicle="foot")["waypoints"],
+            "waypoint": segment_1["waypoints"],
             "color": FOOT_COLOR,
         },
         {
@@ -30,11 +32,12 @@ def enrich_foot_route(route):
             "color": BIKE_COLOR,
         },
         {
-            "waypoint": get_eco_route([transfers['end']['base'], tuple(route['waypoints'][-1].values())], vehicle="foot")["waypoints"],
+            "waypoint": ["waypoints"],
             "color": FOOT_COLOR,
         },
     ]
-
+    route['dist'] = bike_segment['distance'] + segment_1['distance'] + segment_2['distance']
+    route['time'] = bike_segment['time'] + segment_1['time'] + segment_2['time']
 
     route['points'] = [
         {'lat': transfers['start']['base'][1], 'lng': transfers['start']['base'][0], 'type': 'bike'},
