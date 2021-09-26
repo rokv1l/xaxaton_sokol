@@ -45,7 +45,7 @@ def enrich_foot_route(route):
     for place, point in interesting_places.items():
         route['waypoints'].append({
             'waypoint': get_eco_route([[point['lng'], point['lat']], list(reversed(place))])['waypoints'],
-            'color': FOOT_COLOR
+            'color': '#7027b6'
         })
 
         route['points'].append({
