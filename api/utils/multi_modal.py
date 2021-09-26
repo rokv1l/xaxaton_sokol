@@ -96,7 +96,7 @@ def get_green_route(route):
     for i in range(0, total_len, step):
         point = route[i]
         print(point)
-        places = get_green_zones(point['lat'], point['lng'], 300)
+        places = get_green_zones(point['lat'], point['lng'], 1200)
         for place in places:
             place_to_points[(point['lat'], point['lng'])].append(place)
 
