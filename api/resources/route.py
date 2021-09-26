@@ -31,7 +31,7 @@ class Route(Resource):
                 "type": "intres"
             }]
         
-        green_route = get_green_route(eco_route)['waypoints']
+        green_place = get_green_route(eco_route)['waypoints']
         for place, point in green_place.items():
             green_route = get_eco_route([[point['lng'], point['lat']], list(reversed(place))])
             green_route['waypoints'].append({
